@@ -1,33 +1,84 @@
 # GOMA — Open City
 
-GOMA is an original, dependency-free 2D open-city action game that runs directly in modern desktop and mobile browsers. It is designed for GitHub Pages and uses no external assets, runtime services, game-engine build step, or proprietary game branding.
+GOMA is an original **3D third-person browser action game** built as a focused playable vertical slice. The current build uses Three.js/WebGL, procedural low-poly environments, a perspective camera, authored districts, vehicles, NPCs, combat, police response, missions, progression, and responsive desktop/mobile controls.
 
-## What is included in this release
+## Design direction
 
-This release implements the roadmap's recommended vertical slice rather than claiming that every Tier-B content target is complete. It includes walking with sprint/stamina, drivable vehicle entry/exit, vehicle health and collision damage, five original weapon slots, melee and ranged combat, ammunition, enemy health, projectiles, damage feedback, police escalation and wanted-level decay, fleeing civilians, mission chains, clear/escape objectives, XP and levels, cash rewards, five districts, ten landmarks, a safehouse, garage, armory, minimap, main menu, pause menu, map/inventory/settings/credits modals, local save/continue/reset, synthesized original sound effects, responsive HUD, touch movement/sprint/action/fire controls, and quality settings.
+GOMA is intentionally taking structural inspiration from several established game-design patterns without copying their protected assets, characters, maps, dialogue, or branding:
+
+- **Cry of Fear:** authored atmosphere, tension, readable survival/combat feedback, purposeful progression, and environmental storytelling. Its official Steam description emphasizes cinematic experience, immersion, lateral thinking, atmosphere, and a long single-player campaign. citeturn0search0
+- **Black Mesa:** deliberate combat spaces, environmental guidance, enemy AI, audiovisual feedback, and authored campaign progression. Its developers describe redesigned combat arenas, clearer puzzles/objectives, improved AI, detailed environments, soundtrack, and voice acting. citeturn0search6turn0search1
+- **GTA: San Andreas:** third-person open-world traversal, missions with explicit objectives, free roaming, vehicles, weapons, safehouses, and a wanted/police loop. citeturn0search59
+
+The goal is not to make “GTA in a browser.” The goal is to build an original game with a coherent identity and a playable loop.
+
+## Current 3D vertical slice
+
+- Real WebGL 3D rendering with a perspective camera
+- Third-person character controller
+- Mouse camera / pointer-lock aiming on desktop
+- WASD movement, sprint, weapon switching, interaction, shooting
+- Touch movement, sprint, fire, and action controls
+- Procedural city blocks with roads, sidewalks, windows, rooftops, park, harbor, street lights
+- Six authored locations: Police HQ, Garage, Safehouse, Warehouse 9, Night Club, Harbor
+- Driveable vehicle with steering, acceleration, collision damage, enter/exit
+- Pedestrian NPCs and traffic
+- Enemy archetype foundation and police pursuit
+- Wanted/heat escalation and civilians reacting to danger
+- Five weapons: pistol, SMG, shotgun, bat, rifle
+- Five authored mission beats with reach, clear, heat, and survival objectives
+- Cash rewards, kills, weapon ammo, local persistence
+- Dynamic day/night lighting and fog
+- Camera shake, hit feedback, neon signage, shadows, and responsive HUD
+- No proprietary game assets or Rockstar/Valve/Team Psykskallar assets
 
 ## Controls
 
-On desktop, use **WASD or arrow keys** to move and drive, **Shift** to sprint, **E** to interact or enter/exit the vehicle, **F** to attack, **1–5** to switch weapons, and **Esc** to pause. On mobile, use the directional pad, SPRINT, FIRE, and ACTION buttons. Walking, combat, and driving are context-sensitive.
+### Desktop
 
-## Local development
+**WASD** move/drive · **Mouse** rotate camera · **Left click** fire · **E** interact/enter/exit · **Shift** sprint · **1–5** weapons · **Esc** pause · **M** map hint.
 
-No build step is required. Serve the repository over HTTP so browser module loading and localStorage behave like deployment:
+### Mobile
+
+Directional controls, **SPRINT**, **FIRE**, and **ACTION** are shown automatically on smaller screens.
+
+## Development
+
+The game is intentionally dependency-light: Three.js is loaded as a pinned browser module from jsDelivr, while game content is generated locally in JavaScript.
+
+For local development:
 
 ```bash
 python3 -m http.server 8080
 ```
 
-Then open `http://localhost:8080`. The JavaScript is checked with `node --check main.js`.
+Then open `http://localhost:8080`.
 
-## GitHub Pages
+Validate syntax:
 
-`.github/workflows/pages.yml` deploys the repository on every push to `main`. In GitHub, open **Settings → Pages** and select **GitHub Actions** under Build and deployment. The release remains a static client; accounts, cloud saves, validated leaderboards, and multiplayer require a separate backend and must not be implemented by trusting client-submitted scores.
+```bash
+node --check main3d.js
+node --check main.js
+git diff --check
+```
 
-## Roadmap status
+## Roadmap
 
-The vertical slice is the foundation for the remaining Tier-B work. The documented launch targets that still need further production passes are: 12–20 authored main missions plus side content, five to eight authored vehicle types, larger combat and NPC variety, full interiors, original music loops, cross-device QA on physical devices, analytics, server-side leaderboard validation, asset pipeline/polish, and formal legal/release review. This repository should therefore be described as an **expanded playable alpha / vertical slice**, not as a finished commercial game or a GTA substitute.
+This is an **alpha / vertical slice**, not a finished commercial release.
 
-## Legal and creative direction
+Next production gates are:
 
-All game names, text, mission concepts, map layout, visuals, audio synthesis, characters, and branding in this repository are original. Do not add Rockstar/GTA assets, characters, logos, map recreations, or soundtrack material. Any future third-party asset must be owned, original, or properly licensed before distribution.
+1. Replace procedural placeholder geometry with an authored modular asset set.
+2. Add character animation states and better vehicle models.
+3. Build a connected mission campaign with authored encounters and scripted events.
+4. Add interiors for the core locations.
+5. Improve enemy/police AI with cover, search, line-of-sight, and vehicle pursuit.
+6. Add original music loops, ambience, voice/dialogue, and environmental sound.
+7. Add controller/gamepad support.
+8. Perform Chrome/Edge/Firefox/Safari and physical Android/iOS QA.
+9. Profile low-end hardware and add quality presets.
+10. Run a public playtest before calling the game production-ready.
+
+## IP and legal direction
+
+GOMA is an original project. Research references are design references only. Do not add GTA, Black Mesa/Half-Life, Cry of Fear, Rockstar, Valve, or Team Psykskallar assets, maps, characters, dialogue, logos, or soundtrack material. Future third-party assets must be original, owned, or properly licensed.

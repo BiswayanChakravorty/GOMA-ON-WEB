@@ -2,8 +2,8 @@
 
 ## Release identity
 
-**Version:** `v0.2.0-alpha`  
-**Positioning:** Expanded playable alpha / vertical slice  
+**Version:** `v0.3.0-polished-alpha`  
+**Positioning:** Expanded playable alpha / production-polished vertical slice  
 **Deployment:** Static GitHub Pages client
 
 The roadmap explicitly recommends proving a vertical slice before expanding to full Tier-B content. This release follows that recommendation and does not claim that the complete 1.0 launch checklist is finished.
@@ -30,6 +30,18 @@ The roadmap explicitly recommends proving a vertical slice before expanding to f
 | Performance foundation | Partial | View culling for world entities, capped delta, bounded entity counts; deeper pooling/streaming remains |
 | GitHub Pages | Complete | Existing Actions workflow retained and documented |
 | Original/IP-safe direction | Complete | No external game assets, proprietary brands, or copied soundtrack |
+
+## Production polish completed in this pass
+
+- Five selectable vehicle archetypes with distinct handling and presentation
+- Three enemy archetypes with different health/speed profiles
+- Dynamic day/night tint and wanted-state visual treatment
+- Damage vignette and camera-shake feedback
+- Player movement animation/bob and vehicle presentation polish
+- Synthesized gameplay music layer with different tension notes during heat
+- Vehicle HUD and improved mobile/control messaging
+- Runtime particle cap and additional browser-performance safeguards
+- JavaScript syntax and whitespace validation added to the Pages workflow
 
 ## Remaining Tier-B production gates
 

@@ -1,71 +1,88 @@
-# GOMA Tier-B Roadmap Status
+# GOMA Release Status
 
-## Release identity
+## Current release
 
-**Version:** `v0.3.0-polished-alpha`  
-**Positioning:** Expanded playable alpha / production-polished vertical slice  
+**Version:** v0.4.0-3d-alpha  
+**Positioning:** 3D playable vertical slice / pre-production prototype  
 **Deployment:** Static GitHub Pages client
 
-The roadmap explicitly recommends proving a vertical slice before expanding to full Tier-B content. This release follows that recommendation and does not claim that the complete 1.0 launch checklist is finished.
+## What changed
 
-## Implemented in this release
+The previous 2D canvas prototype has been replaced as the active game entrypoint with a real WebGL/Three.js 3D slice.
 
-| Roadmap area | Status | Notes |
-|---|---|---|
-| Stable game loop | Complete | Canvas loop, responsive resize, DPR handling, capped frame delta |
-| Player controller | Complete | Walking, acceleration feel, sprint, stamina, collision, health feedback |
-| Vehicle foundation | Complete | Enter/exit, steering, acceleration, collision damage, destruction/reset |
-| Combat foundation | Complete | Fists, bat, pistol, SMG, shotgun, ammo, projectiles, hit points, enemy health |
-| Police foundation | Complete | Wanted levels, police spawning, pursuit, contact damage, heat decay |
-| NPC reaction | Partial | Civilians flee during heat; full pathfinding/reporting is future work |
-| Mission framework | Complete for vertical slice | Go, clear-area, and escape-heat objectives with chained unlocks |
-| Progression | Complete for vertical slice | Cash, XP, levels, weapon slots, rewards |
-| Save system | Complete | localStorage autosave, manual save, continue, reset, settings persistence |
-| City districts | Complete | Downtown, Industrial, Residential, Harbor, Outskirts labels |
-| Landmarks | Complete | Police HQ, garage, safehouse, armory, hospital, club, warehouse, harbor, bank, fuel station |
-| Interactive locations | Complete for slice | Safehouse save, garage repair, armory weapon rotation, landmark prompts |
-| UI/UX | Complete for slice | Main menu, pause, map, inventory, settings, credits, HUD, toast feedback |
-| Audio | Complete for slice | Original synthesized interaction, combat, alert, and mission feedback sounds |
-| Mobile controls | Complete for slice | Direction pad, sprint, action, fire, responsive HUD |
-| Performance foundation | Partial | View culling for world entities, capped delta, bounded entity counts; deeper pooling/streaming remains |
-| GitHub Pages | Complete | Existing Actions workflow retained and documented |
-| Original/IP-safe direction | Complete | No external game assets, proprietary brands, or copied soundtrack |
+### 3D foundation
+- Perspective camera and WebGL renderer
+- Third-person character presentation
+- Pointer-lock mouse camera on desktop
+- Responsive mobile controls
+- Dynamic lighting, fog, shadows, day/night cycle
 
-## Production polish completed in this pass
+### World
+- Procedural low-poly city blocks
+- Roads and sidewalks
+- Windows and rooftops
+- Park with trees
+- Harbor/water area
+- Street lighting
+- Six authored landmarks
 
-- Five selectable vehicle archetypes with distinct handling and presentation
-- Three enemy archetypes with different health/speed profiles
-- Dynamic day/night tint and wanted-state visual treatment
-- Damage vignette and camera-shake feedback
-- Player movement animation/bob and vehicle presentation polish
-- Synthesized gameplay music layer with different tension notes during heat
-- Vehicle HUD and improved mobile/control messaging
-- Runtime particle cap and additional browser-performance safeguards
-- JavaScript syntax and whitespace validation added to the Pages workflow
+### Gameplay
+- WASD movement and sprint
+- Vehicle entry/exit and driving
+- Vehicle collision damage
+- Five weapons with different fire profiles
+- Hitscan/projectile combat foundation
+- Enemy combat
+- Police pursuit and wanted heat
+- Civilian panic behavior
+- Traffic
+- Mission progression and rewards
+- Cash, kills, ammo, health and armor
+- Local save
 
-## Remaining Tier-B production gates
+### Presentation
+- Dedicated title screen
+- Clear control instructions before play
+- Objective HUD
+- Weapon/ammo HUD
+- Health/armor/heat feedback
+- Interaction prompts
+- Toast feedback
+- Camera shake
+- Neon signage
+- Night lighting and fog
 
-The complete roadmap still calls for more authored content and validation: 12–20 main missions plus 5–10 side missions, 5–8 distinct vehicle types, broader NPC and enemy variety, full interiors, original music loops, 8–12 polished landmarks, physical-device QA, analytics, server-side leaderboard validation if online features are added, production art/animation/effects, formal legal review, and a public beta with tester feedback.
+## Research-driven design direction
 
-Until those gates are completed and tested, the product should be described as an **expanded playable alpha / vertical slice** rather than a finished commercial Tier-B release.
+The design pass was informed by the documented structure of Cry of Fear, Black Mesa, and GTA: San Andreas:
 
-## QA checklist for the next pass
+- Cry of Fear: atmosphere, cinematic progression, lateral thinking, survival-horror feedback, and authored campaign structure.
+- Black Mesa: deliberate combat spaces, readable objectives, enemy AI, environment detail, sound, and presentation.
+- San Andreas: third-person traversal, free-roam structure, explicit mission objectives, vehicles, weapons, safe locations, and police/wanted escalation.
 
-- [x] JavaScript syntax check (`node --check main.js`)
-- [x] Git whitespace check (`git diff --check`)
-- [x] Static server smoke check (HTTP 200 for `/` and `/main.js`)
-- [x] GitHub Pages workflow present
-- [ ] Desktop browser matrix: Chrome, Edge, Firefox, Safari
-- [ ] Mobile device matrix: Android Chrome and iOS Safari
-- [ ] Physical-device frame-rate and rotation testing
-- [ ] GitHub Pages production URL verification after Actions deployment
+These are design references only. GOMA uses original names, geometry, characters, mechanics implementation, and presentation.
 
-## Safe release commands
+## Not production-ready yet
 
-```bash
-node --check main.js
-git diff --check
-python3 -m http.server 8080
-```
+The 3D slice is materially different from the previous 2D prototype, but it is still not a finished commercial game.
 
-All game data is client-side. Do not add online scores, accounts, or secrets without a separately validated backend.
+Remaining gates:
+
+- Authored 3D asset pipeline
+- Character and vehicle animation
+- More detailed interiors
+- Larger authored mission campaign
+- Better police/search/cover/vehicle AI
+- Original music and environmental audio
+- Controller support
+- Physical-device QA
+- Low-end GPU profiling
+- More extensive save-state coverage
+- Accessibility and settings
+- Public playtest and legal/release review
+
+## Validation
+
+The GitHub Pages workflow now checks both `main.js` and `main3d.js` syntax before deployment.
+
+A browser/device playtest is still required for final verification.

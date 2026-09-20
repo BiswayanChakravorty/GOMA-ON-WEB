@@ -23,6 +23,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Validate JavaScript
+        run: node --check main.js
+      - name: Check repository whitespace
+        run: git diff --check
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload site

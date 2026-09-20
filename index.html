@@ -1,13 +1,66 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/><meta name="theme-color" content="#090b10"/><meta name="description" content="GOMA — an original open-city action game playable instantly in your browser."/><title>GOMA — Open City</title><link rel="stylesheet" href="./style.css"/></head>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
+<meta name="theme-color" content="#070b10"/>
+<meta name="description" content="GOMA — an original 3D browser action game."/>
+<title>GOMA — Open City</title>
+<link rel="stylesheet" href="./style.css"/>
+</head>
 <body>
-<div id="loading"><div class="loader-title">GOMA</div><div class="loader-sub">OPEN CITY</div><div class="loader-bar"><span></span></div></div>
-<canvas id="game" aria-label="GOMA game canvas"></canvas>
-<div id="hud"><div class="brand">GOMA <span>OPEN CITY</span></div><div class="stats"><div><small>CASH</small><b id="cash">$0</b></div><div><small>MISSION</small><b id="mission">FREE ROAM</b></div><div><small>HEAT</small><b id="heat">☆☆☆☆☆</b></div><div class="health-stat"><small>HEALTH</small><div class="meter"><i id="health"></i></div></div><div><small>PROFILE</small><b id="xp">LVL 1 · XP 0/180</b></div></div><div id="weaponHud"><small>WEAPON</small><b id="weapon">FISTS</b><small class="vehicle-label">VEHICLE</small><b id="vehicle">COMPACT · GARAGE</b></div><div id="missionBox" class="panel hidden"><div class="panel-title">ACTIVE JOB</div><div id="missionText">—</div><div class="panel-hint">Reach the marker · Escape heat when required</div></div></div>
-<div id="menu" class="screen"><div class="menu-card"><div class="menu-kicker">ORIGINAL BROWSER ACTION GAME</div><h1>GOMA</h1><p>OPEN CITY</p><button data-action="play">PLAY</button><button data-action="continue">CONTINUE</button><button data-action="new">NEW GAME</button><button data-action="settings">SETTINGS</button><button data-action="credits">CREDITS</button><small>WASD / touch · E interact · F attack · 1–5 weapons · ESC pause</small></div></div>
-<div id="pause" class="hidden"></div><div id="modal" class="modal hidden"><div class="modal-card"><button class="modal-close" data-modal="close">×</button><h2 id="modalTitle"></h2><div id="modalBody"></div></div></div>
-<div id="help" class="panel"><b>GOMA</b><br/>WASD / arrows move · SHIFT sprint · E interact<br/>F attack · 1–5 switch weapon · ESC pause</div>
-<div id="touch"><div class="touch-left"><button id="up">▲</button><div><button id="left">◀</button><button id="down">▼</button><button id="right">▶</button></div><button id="sprint">SPRINT</button></div><div class="touch-right"><button id="fireBtn">FIRE</button><button id="action">ACTION</button></div></div>
-<div id="toast" role="status"></div><script type="module" src="./main.js"></script>
-</body></html>
+<div id="loading"><div class="load-logo">GOMA</div><div class="load-sub">OPEN CITY / 3D VERTICAL SLICE</div><div class="load-track"><i></i></div></div>
+<canvas id="game" aria-label="GOMA 3D game canvas"></canvas>
+
+<div id="hud">
+  <div class="brand">GOMA <span>OPEN CITY</span></div>
+  <div class="stats">
+    <div><small>CASH</small><b id="cash">$0</b></div>
+    <div><small>HEALTH</small><div class="meter"><i id="health"></i></div></div>
+    <div><small>ARMOR</small><div class="meter armor"><i id="armor"></i></div></div>
+    <div><small>HEAT</small><b id="heat">☆☆☆☆☆</b></div>
+    <div><small>MISSION</small><b id="mission">FREE ROAM</b></div>
+  </div>
+  <div id="weaponHud"><small>WEAPON</small><b id="weapon">PISTOL</b><span id="ammo">90</span></div>
+  <div id="objective">Explore the city. Find the next job.</div>
+  <div id="prompt" class="hidden"></div>
+  <div id="crosshair">+</div>
+  <div id="toast" role="status"></div>
+</div>
+
+<div id="menu" class="screen">
+  <div class="menu-card">
+    <div class="kicker">ORIGINAL 3D BROWSER ACTION GAME</div>
+    <h1>GOMA</h1>
+    <p>OPEN CITY</p>
+    <button data-action="play">PLAY</button>
+    <button data-action="continue">CONTINUE</button>
+    <button data-action="new">NEW GAME</button>
+    <button data-action="settings">SETTINGS</button>
+    <button data-action="credits">CREDITS</button>
+    <div class="controls"><b>DESKTOP</b> WASD move · Mouse camera · Click fire · E interact · 1–5 weapons · Shift sprint · Esc pause</div>
+    <div class="controls"><b>MOBILE</b> Virtual movement · FIRE · ACTION</div>
+  </div>
+</div>
+
+<div id="pause" class="screen hidden">
+  <div id="pauseCard" class="menu-card">
+    <div class="kicker">GAME PAUSED</div>
+    <h2>GOMA</h2>
+    <button data-modal="resume">RESUME</button>
+    <button data-modal="quit">MAIN MENU</button>
+  </div>
+</div>
+
+<div id="touch">
+  <div class="touch-move">
+    <button id="tUp">▲</button>
+    <div><button id="tLeft">◀</button><button id="tDown">▼</button><button id="tRight">▶</button></div>
+    <button id="tSprint">SPRINT</button>
+  </div>
+  <div class="touch-actions"><button id="tFire">FIRE</button><button onclick="document.dispatchEvent(new KeyboardEvent('keydown',{key:'e'}))">ACTION</button></div>
+</div>
+
+<script type="module" src="./main3d.js"></script>
+</body>
+</html>

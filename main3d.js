@@ -355,6 +355,18 @@ function updateInput() {
   input.sprint=k('shift')||touchState.sprint;
   input.fire=mouseDown||touchState.fire;
 }
+function blocked(x,z,r=1.2){
+  if(x<-174+r||x>174-r||z<-174+r||z>174-r)return true;
+  for(const b of colliders){
+    if(x>b.x-b.w/2-r&&x<b.x+b.w/2+r&&z>b.z-b.d/2-r&&z<b.z+b.d/2+r)return true;
+  }
+  return false;
+}
+function tryMove(pos,dx,dz,r){
+  const nx=pos.x+dx,nz=pos.z+dz;
+  if(!blocked(nx,pos.z,r))pos.x=nx;
+  if(!blocked(pos.x,nz,r))pos.z=nz;
+}
 function movePlayer(dt) {
   if(player.inCar){
     const car=playerCar;
@@ -363,8 +375,9 @@ function movePlayer(dt) {
     car.speed*=Math.pow(.93,dt*60);
     car.angle+=(input.x*1.8*dt)*(Math.abs(car.speed)/12+.25);
     const f=new THREE.Vector3(Math.sin(car.angle),0,Math.cos(car.angle));
-    car.pos.addScaledVector(f,car.speed*dt);
-    car.pos.x=THREE.MathUtils.clamp(car.pos.x,-170,170);car.pos.z=THREE.MathUtils.clamp(car.pos.z,-170,170);
+    const dx=f.x*car.speed*dt,dz=f.z*car.speed*dt;
+    if(!blocked(car.pos.x+dx,car.pos.z,2.2)&&!blocked(car.pos.x,car.pos.z+dz,2.2))car.pos.addScaledVector(f,car.speed*dt);
+    else {car.speed*=-.25;car.health-=Math.abs(car.speed)*.08;shake=Math.min(1,shake+.08);}
     car.group.position.copy(car.pos);car.group.rotation.y=car.angle;
     player.pos.copy(car.pos);
     if(Math.abs(car.speed)>12)setWanted(.01);
@@ -377,7 +390,8 @@ function movePlayer(dt) {
   const camRight=new THREE.Vector3(camForward.z,0,-camForward.x);
   const move=camRight.multiplyScalar(v.x).add(camForward.multiplyScalar(v.z));
   if(move.lengthSq()>0){
-    move.normalize(); player.pos.addScaledVector(move,speed*dt);
+    move.normalize();
+    tryMove(player.pos,move.x*speed*dt,move.z*speed*dt,.9);
     player.angle=Math.atan2(move.x,move.z);
     player.group.rotation.y=player.angle;
   }
@@ -440,11 +454,12 @@ function updateBullets(dt) {
 }
 function updateMission(dt) {
   if(!currentMission)return;
+  if(playerCar.health<=0){playerCar.health=100;player.inCar=false;player.group.visible=true;player.pos.copy(playerCar.pos).add(new THREE.Vector3(3,0,0));toast('Vehicle disabled — repaired at safehouse');}
   const d=Math.hypot(player.pos.x-currentMission.x,player.pos.z-currentMission.z);
   if(currentMission.type==='reach'&&d<8)completeMission();
   if(currentMission.type==='reachHeat'&&d<8){setWanted(2);currentMission.type='survive';currentMission.objective='Lose the police and reach the safehouse.';currentMission.x=-112;currentMission.z=58;ui.objective.textContent=currentMission.objective;}
   if(currentMission.type==='survive'&&wanted===0&&d<12)completeMission();
-  if(currentMission.type==='clear'&&enemies.length===0)completeMission();
+  if(currentMission.type==='clear'&&Math.hypot(player.pos.x-currentMission.x,player.pos.z-currentMission.z)<18&&enemies.length===0)completeMission();
   if(currentMission.type==='survive'&&wanted>0){wantedTimer+=dt;if(wantedTimer>12){wanted=0;wantedTimer=0;cops.splice(0).forEach(c=>scene.remove(c.group,c.car));toast('Heat lost');}}
 }
 

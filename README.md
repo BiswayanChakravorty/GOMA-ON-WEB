@@ -1,35 +1,48 @@
 # GOMA — Open City
 
-An original, lightweight open-city browser game designed to run on GitHub Pages and mobile browsers.
+GOMA is an original, lightweight 2D open-city browser game. It is inspired by the open-world driving/crime genre without using GTA assets, characters, map, branding, or music.
 
-## Current build
-- 2D open-city map
-- Walking and driving
-- Enter/exit vehicle
-- NPC pedestrians and traffic
-- Police heat system
-- Mission markers and cash rewards
+## Playable systems
+- Open city with roads, buildings, trees and districts
+- Third-person walking
+- Drivable car with steering, acceleration and collisions
+- Enter/exit vehicle interaction
+- Ambient pedestrians and traffic
+- Wanted/heat system with police pursuit
+- Mission markers, mission rewards and cash
 - Minimap
-- Keyboard + touch controls
-- No build step required
-
-## Run
-Open `index.html` locally or deploy the repository through GitHub Pages.
+- Desktop keyboard controls
+- Mobile touch controls
+- Responsive HUD and loading screen
+- Zero-dependency static site: no build step required
 
 ## Controls
-- WASD / arrow keys: move or drive
-- Space: enter/exit vehicle
-- E: start mission
-- R: reset
+Desktop:
+- WASD or arrow keys — move / drive
+- Space — enter or exit vehicle
+- E — start mission
+- R — reset
 
-On mobile, use the on-screen directional controls and ACTION button.
+Mobile:
+- Direction pad — move / drive
+- ACTION — interact / start mission
 
-## Next expansion targets
-- weapons/combat
-- shops and garages
-- larger streaming world
-- save/profiles
-- richer vehicle physics
-- mission chains
-- original soundtrack
-- optional online leaderboard backend
+## GitHub Pages
+The repository includes `.github/workflows/pages.yml`.
+
+In GitHub, open Settings → Pages and select GitHub Actions under Build and deployment. Pushes to `main` trigger deployment.
+
+## Roadmap
+1. Combat and damage model
+2. Weapon inventory and pickups
+3. Better NPC state machines
+4. Multiple drivable vehicles
+5. Mission chains with branching objectives
+6. Shops, garages and safehouses
+7. Original audio
+8. Persistent save/profile layer
+9. Online leaderboard / challenges
+10. Streaming world chunks for a substantially larger city
+
+## Legal / IP
+Keep game assets, text, music, characters, missions, map design and branding original or properly licensed. Do not ship Rockstar/GTA assets or recreate GTA protected characters, logos, map or soundtrack.

@@ -6,9 +6,9 @@ GOMA is an original **3D third-person browser action game** built as a focused p
 
 GOMA is intentionally taking structural inspiration from several established game-design patterns without copying their protected assets, characters, maps, dialogue, or branding:
 
-- **Cry of Fear:** authored atmosphere, tension, readable survival/combat feedback, purposeful progression, and environmental storytelling. Its official Steam description emphasizes cinematic experience, immersion, lateral thinking, atmosphere, and a long single-player campaign. citeturn0search0
-- **Black Mesa:** deliberate combat spaces, environmental guidance, enemy AI, audiovisual feedback, and authored campaign progression. Its developers describe redesigned combat arenas, clearer puzzles/objectives, improved AI, detailed environments, soundtrack, and voice acting. citeturn0search6turn0search1
-- **GTA: San Andreas:** third-person open-world traversal, missions with explicit objectives, free roaming, vehicles, weapons, safehouses, and a wanted/police loop. citeturn0search59
+- **Cry of Fear:** authored atmosphere, tension, readable survival/combat feedback, purposeful progression, and environmental storytelling. Its official Steam description emphasizes cinematic experience, immersion, lateral thinking, atmosphere, and a long single-player campaign.
+- **Black Mesa:** deliberate combat spaces, environmental guidance, enemy AI, audiovisual feedback, and authored campaign progression. Its developers describe redesigned combat arenas, clearer puzzles/objectives, improved AI, detailed environments, soundtrack, and voice acting.
+- **GTA: San Andreas:** third-person open-world traversal, missions with explicit objectives, free roaming, vehicles, weapons, safehouses, and a wanted/police loop.
 
 The goal is not to make “GTA in a browser.” The goal is to build an original game with a coherent identity and a playable loop.
 

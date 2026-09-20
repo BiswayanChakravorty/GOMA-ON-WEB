@@ -24,7 +24,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Validate JavaScript
-        run: node --check main.js
+        run: node --check main.js && node --check main3d.js
       - name: Check repository whitespace
         run: git diff --check
       - name: Setup Pages

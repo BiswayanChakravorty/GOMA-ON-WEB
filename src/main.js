@@ -193,7 +193,7 @@ function buildApartment(ox=-58,oz=12){
   box(4,.5,2.2,mats.metal,-3,.5,1,g);box(.3,2,.3,mats.metal,-4,1,1,g);
   box(3,.12,2,mats.red,2,.62,1,g);
   const photo=box(.35,.6,.08,mats.paper,-2,1.35,-2.7,g);photo.userData.levelObject=true;
-  interactable('photo','PHOTO',ox-2,oz-12.7,()=>{addEvidence('Photo of Aarav and Mira');say('Aarav','We took this three weeks ago. She was still here.');});
+  interactable('photo','PHOTO',ox-2,oz-2.7,()=>{addEvidence('Photo of Aarav and Mira');say('Aarav','We took this three weeks ago. She was still here.');});
   const charger=box(.35,.12,.18,mats.paper,3,.72,3,g);charger.userData.levelObject=true;
   interactable('charger','CHARGER',ox+3,oz+3,()=>{addEvidence('Mira’s charger — still plugged in');say('Aarav','She left the charger. And her ID. That doesn’t fit.');});
   interactable('notebook','NOTEBOOK',ox-3,oz+3,()=>{state.notebookFound=true;addEvidence('Notebook: repeated 03:17 entries');say('Aarav','Eleven seconds. She wrote it down before anyone else noticed.');});
@@ -300,8 +300,9 @@ function beginMission2(){
 }
 function buildMaintenance(){
   for(const [x,z,w,d,h] of [[0,-12,26,22,4],[0,15,26,18,3]]){
-    const b=box(w,h,d,mats.wallDark,x,h/2,z);b.userData.levelObject=true;addCollider(x,z,w,d,b);
+    const b=box(w,h,d,mats.wallDark,x,h/2,z);b.userData.levelObject=true;
   }
+  addCollider(-13,0,.3,65);addCollider(13,0,.3,65);
   box(2,.1,65,mats.floor,0,.02,0);scene.children.at(-1).userData.levelObject=true;
   for(const z of [-25,-5,15,30])lamp(-5,z,0x8dc5d8);
   const anomaly=box(1.4,2,1.4,mats.signal,0,1,-28);anomaly.userData.levelObject=true;
@@ -363,7 +364,7 @@ function beginMission4(){
   mode='M4';mission=4;objectiveIndex=0;
   clearMissionSpace();
   clearDynamic();buildEvidenceRoom();
-  player.pos.set(0,0,8);player.group.position.copy(player.pos);
+  player.pos.set(0,0,4);player.group.position.copy(player.pos);
   setChapter('ACT I  /  WHAT SHE KNEW');
   setMission('MISSION 4 — WHAT SHE KNEW','Return to Mira’s apartment and assemble the evidence.');
   toast('The hospital records change what the apartment means.');

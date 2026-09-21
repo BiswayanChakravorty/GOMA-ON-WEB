@@ -1,84 +1,71 @@
-# GOMA — Open City
+# GOMA — The Last Signal
 
-GOMA is an original **3D third-person browser action game** built as a focused playable vertical slice. The current build uses Three.js/WebGL, procedural low-poly environments, a perspective camera, authored districts, vehicles, NPCs, combat, police response, missions, progression, and responsive desktop/mobile controls.
+GOMA is an original **3D third-person story game** built for the browser. The current implementation is an authored **Act I playable build**, not the old open-city sandbox prototype.
 
-## Design direction
+## Current playable scope
 
-GOMA is intentionally taking structural inspiration from several established game-design patterns without copying their protected assets, characters, maps, dialogue, or branding:
+Act I follows Aarav during the first stage of the disappearance investigation:
 
-- **Cry of Fear:** authored atmosphere, tension, readable survival/combat feedback, purposeful progression, and environmental storytelling. Its official Steam description emphasizes cinematic experience, immersion, lateral thinking, atmosphere, and a long single-player campaign.
-- **Black Mesa:** deliberate combat spaces, environmental guidance, enemy AI, audiovisual feedback, and authored campaign progression. Its developers describe redesigned combat arenas, clearer puzzles/objectives, improved AI, detailed environments, soundtrack, and voice acting.
-- **GTA: San Andreas:** third-person open-world traversal, missions with explicit objectives, free roaming, vehicles, weapons, safehouses, and a wanted/police loop.
+- **Prologue — 03:17:** establishes Aarav and Mira before the incident, the eleven-second signal, and Mira's disappearance.
+- **Mission 1 — The Official Story:** search Mira's apartment, recover evidence, and challenge the police explanation.
+- **Mission 2 — First Contact:** follow Mira's trail to the maintenance corridor, encounter impossible geometry, and hear her warning.
+- **Mission 3 — Ward 7:** enter the abandoned hospital wing, fight the first signal-touched enemies, awaken Resonance: Sense, and recover transfer records.
+- **Mission 4 — What She Knew:** assemble the evidence, discover Mira investigated before Day 7, and unlock the route below Veyra.
 
-The goal is not to make “GTA in a browser.” The goal is to build an original game with a coherent identity and a playable loop.
+The Act I build is deliberately focused on **authored story spaces and progression** rather than generic free-roam content.
 
-## Current 3D vertical slice
+## Foundation systems now in place
 
-- Real WebGL 3D rendering with a perspective camera
-- Third-person character controller
-- Mouse camera / pointer-lock aiming on desktop
-- WASD movement, sprint, weapon switching, interaction, shooting
-- Touch movement, sprint, fire, and action controls
-- Procedural city blocks with roads, sidewalks, windows, rooftops, park, harbor, street lights
-- Six authored locations: Police HQ, Garage, Safehouse, Warehouse 9, Night Club, Harbor
-- Driveable vehicle with steering, acceleration, collision damage, enter/exit
-- Pedestrian NPCs and traffic
-- Enemy archetype foundation and police pursuit
-- Wanted/heat escalation and civilians reacting to danger
-- Five weapons: pistol, SMG, shotgun, bat, rifle
-- Five authored mission beats with reach, clear, heat, and survival objectives
-- Cash rewards, kills, weapon ammo, local persistence
-- Dynamic day/night lighting and fog
-- Camera shake, hit feedback, neon signage, shadows, and responsive HUD
-- No proprietary game assets or Rockstar/Valve/Team Psykskallar assets
+- Three.js/WebGL third-person renderer
+- Camera-relative movement and mouse camera
+- Basic collision volumes and authored mission spaces
+- Mission state machine for Prologue + Missions 1–4
+- Dialogue/cutscene presentation
+- Evidence collection and persistent story flags
+- Local save / continue / reset
+- Resonance meter and first ability progression
+- Signal-touched combat and health/damage loop
+- Mission-specific environments: residential apartment, maintenance corridor, St. Auguste Ward 7, evidence room
+- Responsive HUD and story-first menu
+- GitHub Pages deployment with JavaScript syntax validation
 
 ## Controls
 
-### Desktop
-
-**WASD** move/drive · **Mouse** rotate camera · **Left click** fire · **E** interact/enter/exit · **Shift** sprint · **1–5** weapons · **Esc** pause · **M** map hint.
-
-### Mobile
-
-Directional controls, **SPRINT**, **FIRE**, and **ACTION** are shown automatically on smaller screens.
+**WASD** — move  
+**Mouse** — camera  
+**E** — interact / inspect  
+**F / Space** — fire  
+**Esc** — pause
 
 ## Development
 
-The game is intentionally dependency-light: Three.js is loaded as a pinned browser module from jsDelivr, while game content is generated locally in JavaScript.
+The project intentionally has no build-step dependency for the browser prototype. Three.js is loaded as a pinned browser module.
 
-For local development:
+Local server:
 
-```bash
-python3 -m http.server 8080
-```
+    python3 -m http.server 8080
 
-Then open `http://localhost:8080`.
+Syntax validation:
 
-Validate syntax:
+    node --check main.js
+    node --check main3d.js
+    node --check src/main.js
+    git diff --check
 
-```bash
-node --check main3d.js
-node --check main.js
-git diff --check
-```
+## Production direction
 
-## Roadmap
+The old `main3d.js` sandbox remains in the repository for reference, but `index.html` now boots the new story foundation at `src/main.js`.
 
-This is an **alpha / vertical slice**, not a finished commercial release.
+The next development step is **not** to jump to Act II. First, this Act I build should be playtested for:
 
-Next production gates are:
+1. movement and camera feel
+2. story pacing
+3. dialogue presentation
+4. investigation readability
+5. combat feel in Ward 7
+6. evidence progression
+7. save/continue reliability
 
-1. Replace procedural placeholder geometry with an authored modular asset set.
-2. Add character animation states and better vehicle models.
-3. Build a connected mission campaign with authored encounters and scripted events.
-4. Add interiors for the core locations.
-5. Improve enemy/police AI with cover, search, line-of-sight, and vehicle pursuit.
-6. Add original music loops, ambience, voice/dialogue, and environmental sound.
-7. Add controller/gamepad support.
-8. Perform Chrome/Edge/Firefox/Safari and physical Android/iOS QA.
-9. Profile low-end hardware and add quality presets.
-10. Run a public playtest before calling the game production-ready.
+After that feedback, the same foundation can be expanded into Act II without throwing away the architecture again.
 
-## IP and legal direction
-
-GOMA is an original project. Research references are design references only. Do not add GTA, Black Mesa/Half-Life, Cry of Fear, Rockstar, Valve, or Team Psykskallar assets, maps, characters, dialogue, logos, or soundtrack material. Future third-party assets must be original, owned, or properly licensed.
+GOMA is an original project. Do not add GTA, Black Mesa/Half-Life, Cry of Fear, Rockstar, Valve, or Team Psykskallar assets, maps, characters, dialogue, logos, or soundtrack material. Future third-party assets must be original, owned, or properly licensed.

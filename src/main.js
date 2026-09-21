@@ -179,23 +179,23 @@ function buildDistrict(){
   buildApartment();
 }
 
-function buildApartment(){
-  const g=new THREE.Group();g.position.set(-58,0,12);scene.add(g);g.userData.levelObject=true;
+function buildApartment(ox=-58,oz=12){
+  const g=new THREE.Group();g.position.set(ox,0,oz);scene.add(g);g.userData.levelObject=true;
   box(15,.2,12,mats.floor,0,.1,0,g);
   box(15,5,.25,mats.wall,0,2.5,-6,g);box(.25,5,12,mats.wall,-7.5,2.5,0,g);
   box(.25,5,12,mats.wall,7.5,2.5,0,g);
   box(15,5,.25,mats.wall,0,2.5,6,g);
   // doorway opening is represented by a door mesh that can be crossed through by mission.
   const door=box(2.3,4,.18,mats.metal,0,2,-5.9,g);door.userData.levelObject=true;
-  addCollider(-7.5,0,.25,12);addCollider(7.5,0,.25,12);addCollider(0,6,15,.25);
+  addCollider(ox-7.5,oz,.25,12);addCollider(ox+7.5,oz,.25,12);addCollider(ox,oz+6,15,.25);
   // floor props
   box(4,.5,2.2,mats.metal,-3,.5,1,g);box(.3,2,.3,mats.metal,-4,1,1,g);
   box(3,.12,2,mats.red,2,.62,1,g);
   const photo=box(.35,.6,.08,mats.paper,-2,1.35,-2.7,g);photo.userData.levelObject=true;
-  interactable('photo','PHOTO',-60,-.7,()=>{addEvidence('Photo of Aarav and Mira');say('Aarav','We took this three weeks ago. She was still here.');});
+  interactable('photo','PHOTO',ox-2,oz-12.7,()=>{addEvidence('Photo of Aarav and Mira');say('Aarav','We took this three weeks ago. She was still here.');});
   const charger=box(.35,.12,.18,mats.paper,3,.72,3,g);charger.userData.levelObject=true;
-  interactable('charger','CHARGER',-55,15,()=>{addEvidence('Mira’s charger — still plugged in');say('Aarav','She left the charger. And her ID. That doesn’t fit.');});
-  interactable('notebook','NOTEBOOK',-61,15,()=>{state.notebookFound=true;addEvidence('Notebook: repeated 03:17 entries');say('Aarav','Eleven seconds. She wrote it down before anyone else noticed.');});
+  interactable('charger','CHARGER',ox+3,oz+3,()=>{addEvidence('Mira’s charger — still plugged in');say('Aarav','She left the charger. And her ID. That doesn’t fit.');});
+  interactable('notebook','NOTEBOOK',ox-3,oz+3,()=>{state.notebookFound=true;addEvidence('Notebook: repeated 03:17 entries');say('Aarav','Eleven seconds. She wrote it down before anyone else noticed.');});
 }
 
 function setRoom(sceneGroup){
@@ -369,7 +369,7 @@ function beginMission4(){
   toast('The hospital records change what the apartment means.');
 }
 function buildEvidenceRoom(){
-  buildApartment();
+  buildApartment(0,0);
   for(const o of scene.children)if(o.userData.levelObject)o.visible=true;
   box(7,.1,4,mats.wallDark,0,.65,0); // evidence table
   for(let i=0;i<4;i++)box(1.1,.05,1.5,mats.paper,-2+i*1.35,.73,0);

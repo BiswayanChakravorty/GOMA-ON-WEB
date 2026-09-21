@@ -177,6 +177,7 @@ function buildDistrict(){
   textBillboard('ST. AUGUSTE',-12,5,-52,0xb9c6d0);
   textBillboard('NORTH RESIDENTIAL',-58,5,12,0xb9c6d0);
   buildApartment();
+  interactable('police','POLICE DESK',-10,-52,()=>{progressM1();});
 }
 
 function buildApartment(ox=-58,oz=12){
@@ -270,7 +271,6 @@ function beginMission1(){
   player.pos.set(-58,0,8);player.group.position.copy(player.pos);
   setChapter('ACT I  /  THE DISAPPEARANCE');
   setMission('MISSION 1 — THE OFFICIAL STORY','Search Mira’s apartment.');
-  interactables.length=0;
   interactable('door','APARTMENT',-58,6,()=>{});
   toast('Mira is missing. The police say she left voluntarily.');
 }

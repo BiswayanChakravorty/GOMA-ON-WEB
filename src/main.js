@@ -100,6 +100,12 @@ function makeEnemy(x,z){
   g.position.copy(e.pos);scene.add(g);enemies.push(e);return e;
 }
 
+function clearMissionSpace(){
+  for(const o of [...scene.children]) if(o.userData.levelObject) scene.remove(o);
+  colliders.length=0;
+  interactables.length=0;
+}
+
 function clearDynamic(){
   for(const e of enemies)scene.remove(e.group);
   enemies.length=0;
@@ -109,9 +115,7 @@ function clearDynamic(){
 
 function resetWorld(){
   clearDynamic();
-  for(const c of [...colliders]){ if(c.object) c.object.parent?.remove(c.object); }
-  colliders.length=0; interactables.length=0;
-  for(const o of [...scene.children]){ if(o.userData.levelObject)scene.remove(o); }
+  clearMissionSpace();
   buildDistrict();
 }
 
@@ -150,6 +154,7 @@ function propDesk(x,z){
 function interactable(id,label,x,z,action){
   const mesh=box(.65,.65,.65,mats.signal,x,.55,z);
   mesh.userData.levelObject=true; mesh.visible=false;
+  mesh.visible=true;
   interactables.push({id,label,x,z,action,mesh});
   return mesh;
 }
@@ -286,7 +291,7 @@ function progressM1(){
 
 function beginMission2(){
   mode='M2';mission=2;objectiveIndex=0;
-  for(const o of scene.children) if(o.userData.levelObject)o.visible=false;
+  clearMissionSpace();
   clearDynamic();
   buildMaintenance();
   player.pos.set(0,0,9);player.group.position.copy(player.pos);
@@ -322,7 +327,7 @@ function progressM2(){
 
 function beginMission3(){
   mode='M3';mission=3;objectiveIndex=0;
-  for(const o of scene.children) if(o.userData.levelObject)o.visible=false;
+  clearMissionSpace();
   clearDynamic();buildHospital();
   player.pos.set(0,0,15);player.group.position.copy(player.pos);
   setChapter('ACT I  /  WARD 7');setMission('MISSION 3 — WARD 7','Enter the abandoned hospital wing.');
@@ -356,7 +361,7 @@ function progressM3(){
 
 function beginMission4(){
   mode='M4';mission=4;objectiveIndex=0;
-  for(const o of scene.children) if(o.userData.levelObject)o.visible=false;
+  clearMissionSpace();
   clearDynamic();buildEvidenceRoom();
   player.pos.set(0,0,8);player.group.position.copy(player.pos);
   setChapter('ACT I  /  WHAT SHE KNEW');
@@ -468,6 +473,7 @@ function updateMission(){
   if(mode==='M1')progressM1();
   if(mode==='M2')progressM2();
   if(mode==='M3')progressM3();
+  if(mode==='M4'&&objectiveIndex===0&&state.hospitalRecords){setMission('MISSION 4 — WHAT SHE KNEW','Assemble the evidence on the board.');}
   if(mode==='M4'&&objectiveIndex===1&&state.undercityUnlocked&&player.pos.distanceTo(new THREE.Vector3(0,-5,0))<5){
     toast('The entrance is open.');objectiveIndex=2;
   }

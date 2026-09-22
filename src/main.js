@@ -271,7 +271,12 @@ function beginMission1(){
   player.pos.set(-58,0,8);player.group.position.copy(player.pos);
   setChapter('ACT I  /  THE DISAPPEARANCE');
   setMission('MISSION 1 — THE OFFICIAL STORY','Search Mira’s apartment.');
-  interactable('door','APARTMENT',-58,6,()=>{});
+  interactable('door','ENTER APARTMENT',-58,6,()=>{
+  player.pos.set(-58,0,4.5);
+  player.group.position.copy(player.pos);
+  toast('Mira’s apartment — search for anything she left behind.');
+  setMission('MISSION 1 — THE OFFICIAL STORY','Search the apartment for evidence.');
+});
   toast('Mira is missing. The police say she left voluntarily.');
 }
 function progressM1(){
@@ -508,12 +513,14 @@ function loop(){
     updatePlayer(dt);updateEnemies(dt);updateMission();updateCamera(dt);updateEffects(dt);
     if(state.health<=0){state.health=100;player.pos.set(0,0,8);toast('You wake at the last safe point.');}
   }
-  updateUI();renderer.render(scene,camera);requestAnimationFrame(loop);
+  updateUI();renderer.render(scene,camera);
 }
 
 $('dialogue').addEventListener('click',closeDialogue);
 addEventListener('keydown',e=>{
   const k=e.key.toLowerCase();keys.add(k);
+  if(k==='enter'&&dialogue){closeDialogue();return;}
+  if(dialogue)return;
   if(k==='e')interact();
   if(k==='f'||e.code==='Space')attack();
   if(k==='escape'&&running&&!dialogue){paused=!paused;toast(paused?'PAUSED':'RESUMED');}

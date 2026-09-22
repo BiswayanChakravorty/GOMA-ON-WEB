@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+@theme {
+  --color-goma-void: #03070a;
+  --color-goma-night: #071016;
+  --color-goma-signal: #8ee7f1;
+  --color-goma-signal-hot: #c7fbff;
+  --color-goma-muted: #7f929c;
+  --color-goma-danger: #d8757b;
+  --color-goma-warm: #d7bd7a;
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --shadow-goma: 0 24px 90px rgba(0,0,0,.58);
+}
+
+@source "../index.html";
+@source "./main.js";
+
+@utility goma-panel {
+  border: 1px solid rgba(205,229,236,.14);
+  background: linear-gradient(135deg, rgba(7,14,19,.86), rgba(4,9,13,.66));
+  box-shadow: 0 18px 60px rgba(0,0,0,.38);
+  backdrop-filter: blur(12px);
+}
+
+@utility goma-panel-signal {
+  border-color: rgba(142,231,241,.32);
+  box-shadow: 0 0 30px rgba(142,231,241,.06), inset 0 0 22px rgba(142,231,241,.025);
+}
+
+@utility goma-kicker {
+  color: #7f929c;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+}
+
+@utility goma-scanline {
+  background-image: repeating-linear-gradient(
+    180deg,
+    rgba(255,255,255,.018) 0,
+    rgba(255,255,255,.018) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+}
+
+@utility goma-glow {
+  text-shadow: 0 0 22px rgba(142,231,241,.24);
+}
+
+@utility goma-btn {
+  min-height: 44px;
+  border: 1px solid rgba(205,229,236,.14);
+  border-radius: 7px;
+  background: rgba(16,25,31,.78);
+  color: #dce7ea;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
+
+@utility goma-btn-primary {
+  border-color: #8ee7f1;
+  background: #8ee7f1;
+  color: #061014;
+  box-shadow: 0 0 28px rgba(142,231,241,.10);
+}
+
+@utility goma-focus {
+  outline: 1px solid #8ee7f1;
+  outline-offset: 3px;
+}

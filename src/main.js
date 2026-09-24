@@ -1,4 +1,7 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js';
+import { EffectComposer } from 'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 const $ = (id) => document.getElementById(id);
 const ui = {
@@ -9,26 +12,63 @@ const ui = {
 };
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x071016);
-scene.fog = new THREE.FogExp2(0x071016, 0.025);
+scene.background = new THREE.Color(0x05090d);
+scene.fog = new THREE.FogExp2(0x081116, 0.018);
 
 const camera = new THREE.PerspectiveCamera(58, innerWidth/innerHeight, 0.1, 300);
 const renderer = new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
-renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.75));
 renderer.setSize(innerWidth,innerHeight);
 renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.12;
+renderer.shadowMap.autoUpdate=true;
+const composer=new EffectComposer(renderer);
+composer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));
+composer.setSize(innerWidth,innerHeight);
+composer.addPass(new RenderPass(scene,camera));
+const bloomPass=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0.48,0.65,0.78);
+composer.addPass(bloomPass);
 $('game').replaceWith(renderer.domElement);
 renderer.domElement.id='game';
 
 const hemi = new THREE.HemisphereLight(0x94a8bd,0x151a17,0.9);
 scene.add(hemi);
-const moon = new THREE.DirectionalLight(0x9bb5d0,1.35);
+const moon = new THREE.DirectionalLight(0x9bb5d0,1.8);
 moon.position.set(-35,65,20);
 moon.castShadow=true;
-moon.shadow.mapSize.set(1024,1024);
+moon.shadow.mapSize.set(2048,2048);
+moon.shadow.camera.near=1;
+moon.shadow.camera.far=180;
+moon.shadow.camera.left=-90;
+moon.shadow.camera.right=90;
+moon.shadow.camera.top=90;
+moon.shadow.camera.bottom=-90;
 scene.add(moon);
+
+const fill = new THREE.DirectionalLight(0x4d7d8a,0.35);
+fill.position.set(35,18,-45);
+scene.add(fill);
+
+function addAtmosphere(){
+  const count=900;
+  const geo=new THREE.BufferGeometry();
+  const positions=new Float32Array(count*3);
+  for(let i=0;i<count;i++){
+    positions[i*3]=(Math.random()-.5)*150;
+    positions[i*3+1]=Math.random()*18;
+    positions[i*3+2]=(Math.random()-.5)*150;
+  }
+  geo.setAttribute('position',new THREE.BufferAttribute(positions,3));
+  const mat=new THREE.PointsMaterial({color:0x8ebac4,size:.045,transparent:true,opacity:.32,depthWrite:false});
+  const dust=new THREE.Points(geo,mat);
+  dust.userData.atmosphere=true;
+  scene.add(dust);
+  return dust;
+}
+const atmosphere=addAtmosphere();
 
 const clock=new THREE.Clock();
 const keys=new Set();
@@ -57,7 +97,14 @@ const mats={
   metal:new THREE.MeshStandardMaterial({color:0x343a41,roughness:.38,metalness:.5}),
   glass:new THREE.MeshStandardMaterial({color:0x527888,roughness:.2,metalness:.15,transparent:true,opacity:.7}),
   red:new THREE.MeshStandardMaterial({color:0x8e3e45,roughness:.7}),
-  signal:new THREE.MeshStandardMaterial({color:0x9cecff,emissive:0x2e8ca8,emissiveIntensity:2.4}),
+  signal:new THREE.MeshStandardMaterial({color:0x9cecff,emissive:0x2e8ca8,emissiveIntensity:3.2,roughness:.25}),
+  asphalt:new THREE.MeshStandardMaterial({color:0x10171b,roughness:.76,metalness:.05}),
+  building:new THREE.MeshStandardMaterial({color:0x303a40,roughness:.86}),
+  concreteWet:new THREE.MeshStandardMaterial({color:0x465158,roughness:.52,metalness:.12}),
+  window:new THREE.MeshStandardMaterial({color:0x18333c,emissive:0x0d6978,emissiveIntensity:.75,roughness:.25,metalness:.15}),
+  neon:new THREE.MeshStandardMaterial({color:0x9cecff,emissive:0x43d4e6,emissiveIntensity:5,roughness:.2}),
+  skin2:new THREE.MeshStandardMaterial({color:0x9c684f,roughness:.9}),
+  jacket2:new THREE.MeshStandardMaterial({color:0x151c22,roughness:.68,metalness:.15}),
   player:new THREE.MeshStandardMaterial({color:0x2d5f86,roughness:.65}),
   skin:new THREE.MeshStandardMaterial({color:0xc88e6f,roughness:.82}),
   enemy:new THREE.MeshStandardMaterial({color:0x4d6671,roughness:.8}),
@@ -84,9 +131,24 @@ function textBillboard(text,x,y,z,color=0xffffff){
 
 function makePlayer(){
   const g=new THREE.Group();
-  const body=new THREE.Mesh(new THREE.CapsuleGeometry(.45,1.0,4,8),mats.player);body.position.y=1;body.castShadow=true;g.add(body);
-  const head=new THREE.Mesh(new THREE.SphereGeometry(.32,16,10),mats.skin);head.position.y=1.82;head.castShadow=true;g.add(head);
-  const jacket=new THREE.Mesh(new THREE.BoxGeometry(.56,.58,.22),mats.wallDark);jacket.position.set(0,1.05,.3);g.add(jacket);
+  const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.46,.86,6,12),mats.jacket2);
+  torso.position.y=1.02;torso.scale.set(1,.92,.72);torso.castShadow=true;g.add(torso);
+  const shirt=new THREE.Mesh(new THREE.BoxGeometry(.28,.52,.1),mats.player);
+  shirt.position.set(0,1.03,.34);shirt.castShadow=true;g.add(shirt);
+  const head=new THREE.Mesh(new THREE.SphereGeometry(.31,20,14),mats.skin);
+  head.position.y=1.84;head.castShadow=true;g.add(head);
+  const hair=new THREE.Mesh(new THREE.SphereGeometry(.315,20,10,0,Math.PI*2,0,Math.PI*.48),mats.wallDark);
+  hair.position.set(0,1.94,0);hair.castShadow=true;g.add(hair);
+  for(const x of [-.27,.27]){
+    const arm=new THREE.Mesh(new THREE.CapsuleGeometry(.105,.66,5,8),mats.jacket2);
+    arm.position.set(x,1.03,0);arm.rotation.z=x<0?.12:-.12;arm.castShadow=true;g.add(arm);
+    const leg=new THREE.Mesh(new THREE.CapsuleGeometry(.13,.72,5,8),mats.wallDark);
+    leg.position.set(x*.62,.39,0);leg.castShadow=true;g.add(leg);
+    const shoe=box(.27,.13,.52,mats.metal,x*.62,.07,.10,g);
+    shoe.castShadow=true;
+  }
+  const collar=new THREE.Mesh(new THREE.TorusGeometry(.18,.025,8,20),mats.signal);
+  collar.rotation.x=Math.PI/2;collar.position.set(0,1.42,.08);g.add(collar);
   scene.add(g);return g;
 }
 const player={group:makePlayer(),pos:new THREE.Vector3(0,0,7),angle:Math.PI, speed:4.8};
@@ -94,8 +156,16 @@ player.group.position.copy(player.pos);
 
 function makeEnemy(x,z){
   const g=new THREE.Group();
-  const body=new THREE.Mesh(new THREE.CapsuleGeometry(.42,.9,4,8),mats.enemy);body.position.y=.95;body.castShadow=true;g.add(body);
-  const head=new THREE.Mesh(new THREE.SphereGeometry(.3,12,8),mats.skin);head.position.y=1.68;g.add(head);
+  const body=new THREE.Mesh(new THREE.CapsuleGeometry(.42,.9,6,12),mats.enemy);
+  body.position.y=.95;body.scale.set(1,.96,.78);body.castShadow=true;g.add(body);
+  const head=new THREE.Mesh(new THREE.SphereGeometry(.29,16,12),mats.skin2);
+  head.position.y=1.68;head.castShadow=true;g.add(head);
+  const eyeMat=new THREE.MeshStandardMaterial({color:0xbffcff,emissive:0x48d9e8,emissiveIntensity:7});
+  for(const x2 of [-.105,.105]){
+    const eye=new THREE.Mesh(new THREE.SphereGeometry(.035,8,6),eyeMat);
+    eye.position.set(x2,1.72,.275);g.add(eye);
+  }
+  const aura=new THREE.PointLight(0x42d5e8,1.2,5);aura.position.y=1.3;g.add(aura);
   const e={group:g,pos:new THREE.Vector3(x,0,z),health:65,attack:0};
   g.position.copy(e.pos);scene.add(g);enemies.push(e);return e;
 }
@@ -144,34 +214,54 @@ function buildRoom(w,d,h,wallMat=mats.wall){
   addCollider(0,-d/2,w,.25);addCollider(-w/2,0,.25,d);addCollider(w/2,0,.25,d);
 }
 function lamp(x,z,color=0xb8d9e5){
-  const l=new THREE.PointLight(color,2.0,13);l.position.set(x,2.7,z);l.castShadow=true;scene.add(l);
-  const shade=cyl(.16,.08,new THREE.MeshStandardMaterial({color,emissive:color,emissiveIntensity:1.8}),x,2.9,z);
+  const pole=cyl(.045,2.7,mats.metal,x,1.35,z);
+  pole.userData.levelObject=true;
+  const arm=box(.55,.045,.045,mats.metal,x+.22,2.62,z);
+  arm.userData.levelObject=true;
+  const l=new THREE.PointLight(color,2.8,16);l.position.set(x+.45,2.58,z);l.castShadow=true;scene.add(l);
+  const shade=cyl(.11,.07,new THREE.MeshStandardMaterial({color,emissive:color,emissiveIntensity:3.5}),x+.45,2.55,z);
   shade.userData.levelObject=true;
 }
 function propDesk(x,z){
   box(2,.12,.9,mats.metal,x,.95,z);box(.12,1,.8,mats.metal,x-.9,.5,z);box(.12,1,.8,mats.metal,x+.9,.5,z);
 }
 function interactable(id,label,x,z,action){
-  const mesh=box(.65,.65,.65,mats.signal,x,.55,z);
-  mesh.userData.levelObject=true; mesh.visible=false;
-  mesh.visible=true;
-  interactables.push({id,label,x,z,action,mesh});
-  return mesh;
+  const g=new THREE.Group();
+  const core=new THREE.Mesh(new THREE.SphereGeometry(.13,16,12),mats.neon);
+  core.position.y=.8;g.add(core);
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(.42,.018,8,32),mats.signal);
+  ring.rotation.x=Math.PI/2;ring.position.y=.8;g.add(ring);
+  const light=new THREE.PointLight(0x55d9e8,1.4,4);light.position.y=.8;g.add(light);
+  g.position.set(x,0,z);g.userData.levelObject=true;scene.add(g);
+  interactables.push({id,label,x,z,action,mesh:g});
+  return g;
 }
 
 function buildDistrict(){
   // Small authored district around the apartment / hospital / maintenance route.
-  box(180,.5,180,mats.floor,0,-.3,0);scene.children.at(-1).userData.levelObject=true;
+  box(180,.5,180,mats.asphalt,0,-.3,0);scene.children.at(-1).userData.levelObject=true;
+  for(const x of [-65,-15,35,75]){
+    for(const z of [-78,-28,22,72]){
+      box(1.2,.012,4,new THREE.MeshStandardMaterial({color:0xc6c0a2,roughness:.8}),x,.055,z);
+    }
+  }
   for(const [x,z,w,d,h,c] of [
     [-32,-18,25,22,10,0x303941],[35,-18,30,24,13,0x3d444c],
     [-34,32,28,24,8,0x4a3f42],[35,34,32,25,11,0x38444b],
     [0,-52,50,20,7,0x4c4642]
   ]){
-    const b=box(w,h,d,new THREE.MeshStandardMaterial({color:c,roughness:.9}),x,h/2,z);
+    const b=box(w,h,d,new THREE.MeshStandardMaterial({color:c,roughness:.84,metalness:.06}),x,h/2,z);
     b.userData.levelObject=true;addCollider(x,z,w,d,b);
+    for(let wx=-w/2+2;wx<w/2-1;wx+=3.6){
+      for(let wy=2.1;wy<h-.8;wy+=2.6){
+        const lit=((Math.floor(wx*10)+Math.floor(wy*10)+x+z)%5===0);
+        const win=new THREE.Mesh(new THREE.BoxGeometry(1.45,1.05,.045),lit?mats.window:new THREE.MeshStandardMaterial({color:0x111a20,roughness:.35,metalness:.15}));
+        win.position.set(x+wx,wy,z-d/2-.028);win.castShadow=false;win.receiveShadow=true;b.add(win);
+      }
+    }
   }
   // Street grid and street lamps.
-  for(const x of [-65,-15,35,75])box(9,.08,180,new THREE.MeshStandardMaterial({color:0x11161a}),x,.02,0);
+  for(const x of [-65,-15,35,75])box(9,.08,180,new THREE.MeshStandardMaterial({color:0x0d1317,roughness:.9}),x,.02,0);
   for(const z of [-70,-18,32,72])box(180,.08,8,new THREE.MeshStandardMaterial({color:0x11161a}),0,.02,z);
   for(const x of [-58,-8,42])for(const z of [-62,-10,40,70])lamp(x,z);
   textBillboard('ST. AUGUSTE',-12,5,-52,0xb9c6d0);
@@ -509,11 +599,12 @@ function interact(){
 
 function loop(){
   const dt=Math.min(.033,clock.getDelta());
+  atmosphere.rotation.y += dt*.004;
   if(running&&!paused&&!dialogue){
     updatePlayer(dt);updateEnemies(dt);updateMission();updateCamera(dt);updateEffects(dt);
     if(state.health<=0){state.health=100;player.pos.set(0,0,8);toast('You wake at the last safe point.');}
   }
-  updateUI();renderer.render(scene,camera);
+  updateUI();composer.render();
 }
 
 $('dialogue').addEventListener('click',closeDialogue);
@@ -536,9 +627,11 @@ $('new').addEventListener('click',()=>{localStorage.removeItem('goma-story-save'
 
 addEventListener('resize',()=>{
   camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));
+  renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.75));
+  composer.setSize(innerWidth,innerHeight);
+  composer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));
 });
 
 resetWorld();load();
 setTimeout(()=>ui.loading.classList.add('hidden'),800);
-loop();
+renderer.setAnimationLoop(loop);

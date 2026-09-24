@@ -29,7 +29,7 @@ const composer=new EffectComposer(renderer);
 composer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));
 composer.setSize(innerWidth,innerHeight);
 composer.addPass(new RenderPass(scene,camera));
-const bloomPass=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0.48,0.65,0.78);
+const bloomPass=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0.62,0.72,0.68);
 composer.addPass(bloomPass);
 $('game').replaceWith(renderer.domElement);
 renderer.domElement.id='game';
@@ -225,6 +225,57 @@ function lamp(x,z,color=0xb8d9e5){
 function propDesk(x,z){
   box(2,.12,.9,mats.metal,x,.95,z);box(.12,1,.8,mats.metal,x-.9,.5,z);box(.12,1,.8,mats.metal,x+.9,.5,z);
 }
+
+function propBed(x,z,rot=0,parent=scene){
+  const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;g.userData.levelObject=true;parent.add(g);
+  box(2.2,.22,4.2,mats.metal,0,.38,0,g);
+  box(2.05,.28,3.8,new THREE.MeshStandardMaterial({color:0x303941,roughness:.96}),0,.62,0,g);
+  box(2.05,.42,.62,new THREE.MeshStandardMaterial({color:0x666d72,roughness:.95}),0,.86,-1.52,g);
+  box(2.15,.12,.42,mats.paper,0,.87,1.18,g);
+  return g;
+}
+function propCabinet(x,z,parent=scene){
+  const g=new THREE.Group();g.position.set(x,0,z);g.userData.levelObject=true;parent.add(g);
+  box(1.2,1.9,.55,mats.metal,0,.95,0,g);
+  for(let y=.38;y<1.75;y+=.43)box(.98,.025,.02,mats.signal,0,y,.29,g);
+  return g;
+}
+function propMonitor(x,y,z,parent=scene){
+  const g=new THREE.Group();g.position.set(x,y,z);g.userData.levelObject=true;parent.add(g);
+  box(1.15,.72,.09,mats.metal,0,.36,0,g);
+  box(.95,.5,.035,mats.screen,0,.4,.06,g);
+  box(.12,.35,.12,mats.metal,0,.02,0,g);
+  box(.48,.06,.25,mats.metal,0,-.16,0,g);
+  return g;
+}
+function propPipe(x,y,z,len=5,rot=0,parent=scene){
+  const p=cyl(.07,len,mats.metal,x,y,z,parent);p.rotation.z=Math.PI/2;p.rotation.y=rot;p.userData.levelObject=true;
+  return p;
+}
+function propGurney(x,z,rot=0,parent=scene){
+  const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;g.userData.levelObject=true;parent.add(g);
+  box(1.1,.18,2.5,mats.metal,0,.72,0,g);
+  box(1,.18,2.35,new THREE.MeshStandardMaterial({color:0x667076,roughness:.85}),0,.83,0,g);
+  for(const x2 of [-.42,.42])for(const z2 of [-.9,.9]){cyl(.07,.55,mats.metal,x2,.42,z2,g);const w=new THREE.Mesh(new THREE.TorusGeometry(.09,.035,8,16),mats.metal);w.rotation.x=Math.PI/2;w.position.set(x2,.12,z2);g.add(w);}
+  return g;
+}
+function propTrash(x,z,parent=scene){
+  const g=new THREE.Group();g.position.set(x,0,z);g.userData.levelObject=true;parent.add(g);
+  const bin=new THREE.Mesh(new THREE.CylinderGeometry(.32,.25,.65,16),new THREE.MeshStandardMaterial({color:0x252d31,roughness:.82,metalness:.2}));
+  bin.position.y=.33;bin.castShadow=true;g.add(bin);
+  const rim=new THREE.Mesh(new THREE.TorusGeometry(.29,.025,8,20),mats.metal);rim.position.y=.66;g.add(rim);
+  return g;
+}
+function puddle(x,z,w,d,parent=scene){
+  const m=new THREE.Mesh(new THREE.CircleGeometry(1,32),new THREE.MeshStandardMaterial({color:0x17282e,roughness:.12,metalness:.45,transparent:true,opacity:.55}));
+  m.scale.set(w,d,1);m.rotation.x=-Math.PI/2;m.position.set(x,.012,z);m.userData.levelObject=true;parent.add(m);
+  return m;
+}
+function wallPanel(x,y,z,w,h,parent=scene){
+  const m=box(w,h,.035,new THREE.MeshStandardMaterial({color:0x202a30,roughness:.7,metalness:.35}),x,y,z,parent);m.userData.levelObject=true;
+  box(w-.18,.025,.045,mats.signal,x,y+h*.18,z-.025,parent);
+  return m;
+}
 function interactable(id,label,x,z,action){
   const g=new THREE.Group();
   const core=new THREE.Mesh(new THREE.SphereGeometry(.13,16,12),mats.neon);
@@ -279,8 +330,17 @@ function buildApartment(ox=-58,oz=12){
   // doorway opening is represented by a door mesh that can be crossed through by mission.
   const door=box(2.3,4,.18,mats.metal,0,2,-5.9,g);door.userData.levelObject=true;
   addCollider(ox-7.5,oz,.25,12);addCollider(ox+7.5,oz,.25,12);addCollider(ox,oz+6,15,.25);
-  // floor props
-  box(4,.5,2.2,mats.metal,-3,.5,1,g);box(.3,2,.3,mats.metal,-4,1,1,g);
+  // Apartment dressing: furniture, screens, storage and small clutter.
+  propBed(-2.8,1.7,0,g);
+  propCabinet(5.5,1.7,g);
+  propMonitor(3.2,1.0,2.4,g);
+  box(2.8,.08,.65,mats.metal,2.8,.92,2.25,g);
+  box(.08,.8,.08,mats.metal,1.65,.48,2.25,g);box(.08,.8,.08,mats.metal,3.95,.48,2.25,g);
+  for(const z2 of [2.5,3.0,3.5])box(1.3,.06,.35,mats.paper,-4.8,.82,z2,g);
+  propTrash(5.2,-3.8,g);
+  wallPanel(0,3.3,-5.82,5.5,.9,g);
+  box(4,.5,2.2,mats.metal,-3,.5,1,g);
+  box(.3,2,.3,mats.metal,-4,1,1,g);
   box(3,.12,2,mats.red,2,.62,1,g);
   const photo=box(.35,.6,.08,mats.paper,-2,1.35,-2.7,g);photo.userData.levelObject=true;
   interactable('photo','PHOTO',ox-2,oz-2.7,()=>{addEvidence('Photo of Aarav and Mira');say('Aarav','We took this three weeks ago. She was still here.');});
@@ -400,6 +460,9 @@ function buildMaintenance(){
   addCollider(-13,0,.3,65);addCollider(13,0,.3,65);
   box(2,.1,65,mats.floor,0,.02,0);scene.children.at(-1).userData.levelObject=true;
   for(const z of [-25,-5,15,30])lamp(-5,z,0x8dc5d8);
+  for(const y of [1.3,2.5]){propPipe(-11.8,y,-8,35,0);propPipe(11.8,y,8,35,0);}
+  for(const z of [-22,-4,14,27]){wallPanel(-12.82,1.7,z,.8,1.2);propCabinet(9.8,z);}
+  puddle(-3,-19,3.8,1.2);puddle(5,8,2.2,.8);
   const anomaly=box(1.4,2,1.4,mats.signal,0,1,-28);anomaly.userData.levelObject=true;
   interactable('anomaly','ANOMALY',0,-28,()=>{
     state.anomalySeen=true;state.resonance=25;addEvidence('Signal fragment — Mira’s voice');
@@ -435,6 +498,12 @@ function buildHospital(){
     const b=box(w,4,d,mats.wall,x,2,z);b.userData.levelObject=true;addCollider(x,z,w,d,b);
   }
   for(const x of [-20,-7,7,20])lamp(x,20,0xb8d5df);
+  for(const x of [-14,-4,4,14]){propGurney(x,-2,(x>0?Math.PI:0));propTrash(x+2,6);}
+  propCabinet(-20,8);propCabinet(20,8);
+  propMonitor(-18,1.0,4);propMonitor(18,1.0,4);
+  for(const z of [-15,-5,5,15])propPipe(-20,2.8,z,10,0);
+  puddle(-3,-10,4.2,1.1);puddle(12,14,3,.9);
+  wallPanel(0,2.2,-22,10,1.3);
   textBillboard('WARD 7',-4,5,-20,0xd9e5eb);
   interactable('records','RECORDS ROOM',-18,2,()=>{
     if(state.resonance<100){addEvidence('Hospital transfer records');state.hospitalRecords=true;state.resonance=100;say('AARAV','These transfers happened before the disappearances. Why is Mira’s name here?');}
